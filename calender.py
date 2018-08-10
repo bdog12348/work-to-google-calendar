@@ -21,6 +21,8 @@ calendarID = #Calendar id from google calendars
 timeZone = #Time zone info for google calendar
 timeZoneOffset =  #Time zone offset for google calendar
 
+startOffset = 30 #Minutes to subtract from actual work start time for alarm use
+
 def main():   
     store = file.Storage('token.json') #File generated after google authentication
     creds = store.get()
@@ -58,12 +60,12 @@ def main():
             if time[-1:] == 'a':
                 time = time[:-1]
                 mini = time.split(':')[1]
-                if int(mini) < 30:
-                    leftOver = 30 - int(mini)
+                if int(mini) < startOffset:
+                    leftOver = startOffset - int(mini)
                     mini = 60 - leftOver
                     hrDif = -1
                 else:
-                    mini = int(mini) - 30
+                    mini = int(mini) - startOffset
                 hr = time.split(':')[0]
                 hr = int(hr) + hrDif
                 hr = str(hr)
@@ -72,10 +74,12 @@ def main():
             elif time[-1:] == 'p':
                 time = time[:-1]
                 mini = time.split(':')[1]
-                mini = int(mini) - 30
-                if int(mini) < 0:
-                    mini = abs(mini)
+                if int(mini) < 30:
+                    leftOver = 30 - int(mini)
+                    mini = 60 - leftOver
                     hrDif = -1
+                else:
+                    mini = int(mini) - 30
                 hr = time.split(':')[0]
                 hr = int(hr) + hrDif
                 hr = int(hr) + 12
